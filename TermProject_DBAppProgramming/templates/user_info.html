@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user_info</title>
+</head>
+<body>
+<div><h2>{{user_name}}</h2></div>
+<!-- id는 현재 로그인한 유저의 id
+    user_name은 조회중인 유저의 이름 ==> 다른 유저! -->
+<div>
+    <form action='/user_info' method="post">
+        <input type="submit" name="relation" value="follow"><input type="submit" name="relation" value="mute">
+        <input type="hidden" name="id" value="{{id | safe}}">
+        <input type="hidden" name="user_name" value="{{user_name | safe}}">
+    </form>
+</div>
+
+<!-- Review Table -->
+<div>
+    <h3>[Reviews]</h3>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>ratings</th>
+            <th>movies</th>
+            <th>review</th>
+            <th>time</th>
+        </thead>
+        <tbody>
+            {% for review in rev_res %}
+            <tr>
+                <td>{{ review[0] }}</td>
+                <td style="background-color: aquamarine;">
+                    <form action='/movie_info' method="post">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                        <input type="submit" name="mov_title" value="{{review[1] | safe}}">
+                    </form>
+                </td>
+                <td>{{ review[2] }}</td>
+                <td>{{ review[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Followers -->
+<div>
+    <h3>[Followers]</h3>
+    <div>
+        {% for follower in followers %}
+        <form action="/user_info" method="post">
+            <input type="hidden" name="id" value="{{id | safe}}">
+            <input type="submit" name="user_name" value="{{follower[0] | safe}}" style="background-color: brown;">
+        </form>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
+

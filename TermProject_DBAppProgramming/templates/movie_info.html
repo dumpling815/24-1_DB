@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>movie_info</title>
+</head>
+<body>
+<div><h2>{{mov_title}}</h2></div>
+<!-- Movie Table -->
+<div>
+    <h3>Movies</h3>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>director</th>
+            <th>genre</th>
+            <th>release date</th>
+        </thead>
+        <tbody>
+            <tr>
+                {% for movie in mov_res %}
+                    <td>{{ movie[0] }}</td>
+                    <td>{{ movie[1] }}</td>
+                    <td>{{ movie[2] }}</td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Review Table -->
+<div>
+    <h3>[Reviews]</h3>
+    <span>Average Rating:{{Av_rat}}</span>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>ratings</th>
+            <th>user</th>
+            <th>review</th>
+            <th>time</th>
+        </thead>
+        <tbody>
+            {% for review in rev_res %}
+            <tr>
+                <td>{{ review[0] }}</td>
+                <td style="background-color: brown;">
+                    <form action="/user_info" method="post">
+                        <input type="submit" name="user_name" value="{{review[1] | safe}}">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                    </form>
+                </td>
+                <td>{{ review[2] }}</td>
+                <td>{{ review[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- My Review  -->
+<div>
+    <form action="/movie_info">
+        <label for="ratings">My Review: </label>
+        <input id ='ratings' name='rating' type="range" max="5" min="0" step="1" value="5">
+        <br>
+        <input id = 'review_text' name="review_text" type="textarea">
+        <input type="hidden" name="id" value={{id}}>
+        <input type="hidden" name="mov_title" value={{mov_title}}>
+        <input type="submit" name="rev_submit"> 
+    </form>
+</div>
+</body>
+</html>

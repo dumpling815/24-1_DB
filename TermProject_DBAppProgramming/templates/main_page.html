@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+</head>
+<body>
+<!-- ID view -->
+<div>ID:<span style="background-color: darkolivegreen;">{{id}}</span></div>
+<div>
+    <form action="/return_to_login" method="post"><button>logout</button></form>
+</div>
+<!-- Movie Table -->
+<div>
+    <h2>Movies</h2>
+    <form action="/mainpage" method="post">
+        <input type="submit" name="mov_order" value="latest"><input type="submit" name="mov_order" value="genre"><input type="submit" name="mov_order" value="ratings">
+        <input type="hidden" name="id" value="{{id | safe}}">
+        <input type="hidden" name="rev_order" value="latest">
+    </form>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>title</th>
+            <th>ratings</th>
+            <th>director</th>
+            <th>genre</th>
+            <th>release date</th>
+        </thead>
+        <tbody>
+            {% for movie in mov_res %}
+            <tr>
+                <td style="background-color: aquamarine;">
+                    <form action="/movie_info" method="post">
+                        <input type="submit" name="mov_title" value="{{movie[0] | safe}}">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                    </form>
+                </td>
+                <td>{{ movie[1] }}</td>
+                <td>{{ movie[2] }}</td>
+                <td>{{ movie[3] }}</td>
+                <td>{{ movie[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Review Table -->
+<div>
+    <h2>Reviews</h2>
+    <form action="/mainpage" method="post">
+        <input type="submit" name="rev_order" value="latest"><input type="submit" name="rev_order" value="title" ><input type="submit" name="rev_order" value="followers">
+        <input type="hidden" name="id" value="{{id | safe}}">
+        <input type="hidden" name="mov_order" value="latest">
+    </form>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>ratings</th>
+            <th>user</th>
+            <th>title</th>
+            <th>review</th>
+            <th>time</th>
+        </thead>
+        <tbody>
+            {% for review in rev_res %}
+            <tr>
+                <td>{{ review[0] }}</td>
+                <td style="background-color: brown;">
+                    <form action="/user_info" method="post">
+                        <input type="submit" name="user_name" value="{{review[1] | safe}}">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                    </form>
+                </td>
+                <td style="background-color: aquamarine;">
+                    <form action="/movie_info" method="post">
+                        <input type="submit" name="mov_title" value="{{review[2] | safe}}">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                    </form>
+                </td>
+                <td>{{ review[3] }}</td>
+                <td>{{ review[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
