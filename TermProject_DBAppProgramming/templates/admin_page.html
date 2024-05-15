@@ -38,12 +38,12 @@
     <h3>[Add Movie]</h3>
     <div>
         <form action="/admin_page" method="post">
-            <input type="hidden" name="id" value="{{id | safe}}"
+            <input type="hidden" name="id" value="{{id | safe}}">
             <label for="mov_title">Title:</label><br>
             <input id="mov_title" type="text" name="mov_title"><br>
             <label for="director">Director:</label><br>
             <input id="director" type="text" name="director"><br>
-            <label for="genre">Genre:</label><br><br>
+            <label for="genre">Genre:</label><br>
             <select id="genre" name="genre">
                 <option value="drama">drama</option>
                 <option value="fantasy">fantasy</option>
@@ -53,7 +53,7 @@
             </select><br>
             <label for="rel_date">Release date:</label><br>
             <input id="rel_date" type="date" name="rel_date" min="1900-01-01" max="2099-12-31">
-            <input type="submit" id="add_button" value="Add" disabled>
+            <input type="submit" id="add_button" name="add" value="Add" disabled>
         </form>
         <script>
             function checkInputs() {
@@ -73,6 +73,79 @@
             document.getElementById('genre').addEventListener('change', checkInputs);
             document.getElementById('rel_date').addEventListener('input', checkInputs);
         </script>
+    </div>
+</div>
+
+<div>
+    <h3>[Entire Review Control]</h3>
+    <div>
+        <table border="1">
+            <thead style="background-color: aliceblue;">
+                <th>ratings</th>
+                <th>movies</th>
+                <th>review</th>
+                <th>reviewer_id</th>
+                <th>delete</th>
+            </thead>
+            <tbody>
+                {% for rev in ent_rev %}
+                <tr>
+                    <td>{{ rev[0] }}</td>
+                    <td style="background-color: aquamarine;">
+                        <form action='/movie_info' method="post">
+                            <input type="hidden" name="id" value="{{id | safe}}">
+                            <input type="submit" name="mov_title" value="{{rev[1] | safe}}">
+                        </form>
+                    </td>
+                    <td>{{ rev[2] }}</td>
+                    <td>{{ rev[3] }}</td>
+                    <td style="background-color: red;">
+                        <form action="/admin_page" method="post">
+                            <input type="submit" name="delete_rev" value="delete">
+                            <input type="hidden" name="delete_uid" value="{{rev[3] | safe}}">
+                            <input type="hidden" name="delete_title" value="{{rev[1] | safe}}">
+                            <input type="hidden" name="id" value="{{id | safe}}">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>[Entire User Control]</h3>
+    <div>
+        <table border="1">
+            <thead style="background-color: aliceblue;">
+                <th>id</th>
+                <th>name</th>
+                <th>email</th>
+                <th>reg_date</th>
+                <th>delete</th>
+            </thead>
+            <tbody>
+                {% for user in ent_user %}
+                <tr>
+                    <td style="background-color: yellowgreen;">
+                        <form action='/user_info' method="post">
+                            <input type="hidden" name="id" value="{{id | safe}}">
+                            <input type="submit" name="user_id" value="{{user[0] | safe}}">
+                        </form>
+                    </td>
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td>
+                    <td>{{ user[3] }}</td>
+                    <td style="background-color: red;">
+                        <form action="/admin_page" method="post">
+                            <input type="submit" name="delete_user" value="delete">
+                            <input type="hidden" name="delete_id" value="{{user[0] | safe}}">
+                            <input type="hidden" name="id" value="{{id | safe}}">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 

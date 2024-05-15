@@ -35,7 +35,9 @@ def register():
             error_message = "Given ID is already exist"
             return render_template('login_page.html',error_message=error_message)
         else:
-            cur.execute("insert into users values ('{id_}','{password_}','user')".format(id_=id,password_=password))
+            cur.execute("insert into users values ('{id}','{password}','user')".format(id=id,password=password))
+            reg_date= datetime.datetime.now().strftime("%Y-%m-%d")
+            cur.execute("insert into user_info(id,reg_date) values ('{id}','{reg_date}','user')".format(id=id,reg_date=reg_date))
             connect.commit()
             return render_template("login_page.html",error_message=error_message)
 
@@ -248,7 +250,7 @@ def movie_info():
 @app.route("/user_info" , methods=['post'])
 def user_info():
     # id: 현재 로그인 중인 유저의 id
-    # user_name: 조회중인 유저 이름
+    # user_id: 조회중인 유저 id
     id = request.form['id']
     user_id = request.form['user_id']
     cur.execute("select role from users where id='{}';".format(id))
@@ -284,7 +286,14 @@ def user_info():
     followers = cur.fetchall()
     if role == 'admin':
         if id == user_id: #admin 이 자기 페이지 보는것.
-            return render_template("/admin_page.html",id=id,rev_res=rev_res)
+            cur.execute("select ratings, title, review, uid\
+                        from reviews,movies\
+                        where id = mid;")
+            ent_rev = cur.fetchall()
+            cur.execute("select id, name, email, reg_date\
+                from user_info;")
+            ent_user = cur.fetchall()
+            return render_template("/admin_page.html",id=id,rev_res=rev_res,ent_rev=ent_rev,ent_user=ent_user)
         else:  #admin이 다른 사용자 보는것.
             return render_template("/user_info.html",id=id,user_id=user_id,rev_res=rev_res,followers=followers)
     else: # not admin
@@ -343,18 +352,43 @@ def my_info():
 @app.route("/admin_page", methods=['post'])
 def admin_page():
     id = request.form['id']
-    mov_title = request.form['mov_title']
-    director = request.form['director']
-    genre = request.form['genre']
-    rel_date = request.form['rel_date']
+    if request.form.get('add') != None:
+        mov_title = request.form['mov_title']
+        director = request.form['director']
+        genre = request.form['genre']
+        rel_date = request.form['rel_date']
 
-    cur.execute("select count(id) from movies;")
-    new_mid = cur.fetchone()[0] +1
+        cur.execute("select count(id) from movies;")
+        new_mid = cur.fetchone()[0] +1
+        cur.execute("insert into movies(id,title,director,genre,rel_date)\
+                        values('{id}','{title}','{director}','{genre}','{rel_date}');"\
+                    .format(id=new_mid,title=mov_title,director=director,genre=genre,rel_date=rel_date))
+        connect.commit()
 
-    cur.execute("insert into movies(id,title,director,genre,rel_date)\
-                    values('{id}','{title}','{director}','{genre}','{rel_date}');"\
-                .format(id=new_mid,title=mov_title,director=director,genre=genre,rel_date=rel_date))
-    connect.commit()
+    if request.form.get('delete_rev') != None:
+        mov_title = request.form['delete_title']
+        uid = request.form['delete_uid']
+        cur.execute("select id from movies where title='{}';".format(mov_title))
+        mid = cur.fetchone()[0]
+        cur.execute("delete from reviews\
+                    where uid = '{}' and mid = '{}';".format(uid,mid))
+        connect.commit()
+
+    if request.form.get('delete_user') != None:
+        delete_id = request.form['delete_id']
+        cur.execute("delete from reviews\
+                    where uid = '{}';".format(delete_id))
+        cur.execute("delete from mal_user\
+                    where id = '{}';".format(delete_id))
+        cur.execute("delete from ties\
+                    where id = '{}';".format(delete_id))
+        cur.execute("delete from ties\
+                    where opid = '{}';".format(delete_id))
+        cur.execute("delete from user_info\
+                    where id = '{}';".format(delete_id))
+        cur.execute("delete from users\
+                    where id = '{}';".format(delete_id))
+        connect.commit()
 
     cur.execute("select ratings, title, review, rev_time\
                 from reviews,movies\
@@ -362,6 +396,15 @@ def admin_page():
                 mid = movies.id;".format(id))
     rev_res = cur.fetchall()
 
-    return render_template("admin_page.html",id=id,rev_res=rev_res)
+    cur.execute("select ratings, title, review, uid\
+                from reviews,movies\
+                where id = mid;")
+    ent_rev = cur.fetchall()
+
+    cur.execute("select id, name, email, reg_date\
+                from user_info;")
+    ent_user = cur.fetchall()
+
+    return render_template("admin_page.html",id=id,rev_res=rev_res,ent_rev=ent_rev,ent_user=ent_user)
 if __name__ == '__main__':
     app.run()
