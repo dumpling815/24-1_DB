@@ -13,7 +13,7 @@
 <!-- Movie Table -->
 <div>
     <h2>Movies</h2>
-    <form action="/mainpage" method="post">
+    <form action="/main_page" method="post">
         <input type="submit" name="mov_order" value="latest"><input type="submit" name="mov_order" value="genre"><input type="submit" name="mov_order" value="ratings">
         <input type="hidden" name="id" value="{{id | safe}}">
         <input type="hidden" name="rev_order" value="latest">
@@ -48,8 +48,8 @@
 <!-- Review Table -->
 <div>
     <h2>Reviews</h2>
-    <form action="/mainpage" method="post">
-        <input type="submit" name="rev_order" value="latest"><input type="submit" name="rev_order" value="title" ><input type="submit" name="rev_order" value="followers">
+    <form action="/main_page" method="post">
+        <input type="submit" name="rev_order" value="latest"><input type="submit" name="rev_order" value="title" ><input type="submit" name="rev_order" value="following">
         <input type="hidden" name="id" value="{{id | safe}}">
         <input type="hidden" name="mov_order" value="latest">
     </form>
@@ -67,7 +67,7 @@
                 <td>{{ review[0] }}</td>
                 <td style="background-color: brown;">
                     <form action="/user_info" method="post">
-                        <input type="submit" name="user_name" value="{{review[1] | safe}}">
+                        <input type="submit" name="user_id" value="{{review[1] | safe}}">
                         <input type="hidden" name="id" value="{{id | safe}}">
                     </form>
                 </td>

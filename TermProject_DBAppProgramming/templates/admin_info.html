@@ -2,20 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>user_info</title>
+    <title>admin_info</title>
 </head>
 <body>
 <div><h2>{{user_id}}</h2></div>
-<!-- id는 현재 로그인한 유저의 id
-    user_name은 조회중인 유저의 이름 ==> 다른 유저! -->
-<div>
-    <form action='/user_info' method="post">
-        <input type="submit" name="relation" value="follow"><input type="submit" name="relation" value="mute">
-        <input type="hidden" name="id" value="{{id | safe}}">
-        <input type="hidden" name="user_id" value="{{user_id | safe}}">
-    </form>
-</div>
-
 <!-- Review Table -->
 <div>
     <h3>[Reviews]</h3>
@@ -44,18 +34,6 @@
     </table>
 </div>
 
-<!-- Followers -->
-<div>
-    <h3>[Followers]</h3>
-    <div>
-        {% for follower in followers %}
-        <form action="/user_info" method="post">
-            <input type="hidden" name="id" value="{{id | safe}}">
-            <input type="submit" name="user_id" value="{{follower[0] | safe}}" style="background-color: brown;">
-        </form>
-        {% endfor %}
-    </div>
-</div>
 <!-- Return to main page -->
 <div>
     <form action="/main_page", method="post">
@@ -65,4 +43,3 @@
 </div>
 </body>
 </html>
-

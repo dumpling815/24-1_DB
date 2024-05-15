@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>my_info</title>
+</head>
+<body>
+<div><h2>{{id}}</h2></div>
+<!-- Review Table -->
+<div>
+    <h3>[Reviews]</h3>
+    <table border="1">
+        <thead style="background-color: aliceblue;">
+            <th>ratings</th>
+            <th>movies</th>
+            <th>review</th>
+            <th>time</th>
+        </thead>
+        <tbody>
+            {% for review in rev_res %}
+            <tr>
+                <td>{{ review[0] }}</td>
+                <td style="background-color: aquamarine;">
+                    <form action='/movie_info' method="post">
+                        <input type="hidden" name="id" value="{{id | safe}}">
+                        <input type="submit" name="mov_title" value="{{review[1] | safe}}">
+                    </form>
+                </td>
+                <td>{{ review[2] }}</td>
+                <td>{{ review[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>[Add Movie]</h3>
+    <div>
+        <form action="/admin_page" method="post">
+            <input type="hidden" name="id" value="{{id | safe}}"
+            <label for="mov_title">Title:</label><br>
+            <input id="mov_title" type="text" name="mov_title"><br>
+            <label for="director">Director:</label><br>
+            <input id="director" type="text" name="director"><br>
+            <label for="genre">Genre:</label><br><br>
+            <select id="genre" name="genre">
+                <option value="drama">drama</option>
+                <option value="fantasy">fantasy</option>
+                <option value="comedy">comedy</option>
+                <option value="horror">horror</option>
+                <option value="action">action</option>
+            </select><br>
+            <label for="rel_date">Release date:</label><br>
+            <input id="rel_date" type="date" name="rel_date" min="1900-01-01" max="2099-12-31">
+            <input type="submit" id="add_button" value="Add" disabled>
+        </form>
+        <script>
+            function checkInputs() {
+                const title = document.getElementById('mov_title').value.trim();
+                const director = document.getElementById('director').value.trim();
+                const genre = document.getElementById('genre').value;
+                const releaseDate = document.getElementById('rel_date').value;
+                const button = document.getElementById('add_button');
+                if (title && director && genre && releaseDate) {
+                    button.disabled = false;
+                } else {
+                    button.disabled = true;
+                }
+            }
+            document.getElementById('mov_title').addEventListener('input', checkInputs);
+            document.getElementById('director').addEventListener('input', checkInputs);
+            document.getElementById('genre').addEventListener('change', checkInputs);
+            document.getElementById('rel_date').addEventListener('input', checkInputs);
+        </script>
+    </div>
+</div>
+
+<br>
+<!-- Return to main page -->
+<div>
+    <form action="/main_page", method="post">
+        <input type="submit", value="Return to Main page">
+        <input type="hidden", name="id" value="{{id | safe}}">
+    </form>
+</div>
+</body>
+</html>

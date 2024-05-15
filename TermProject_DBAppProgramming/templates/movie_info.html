@@ -44,7 +44,7 @@
                 <td>{{ review[0] }}</td>
                 <td style="background-color: brown;">
                     <form action="/user_info" method="post">
-                        <input type="submit" name="user_name" value="{{review[1] | safe}}">
+                        <input type="submit" name="user_id" value="{{review[1] | safe}}">
                         <input type="hidden" name="id" value="{{id | safe}}">
                     </form>
                 </td>
@@ -58,14 +58,36 @@
 
 <!-- My Review  -->
 <div>
-    <form action="/movie_info">
+    <h3>My Review</h3>
+    <form action="/movie_info", method="post">
         <label for="ratings">My Review: </label>
-        <input id ='ratings' name='rating' type="range" max="5" min="0" step="1" value="5">
+        <select id='ratings' name="ratings">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
         <br>
-        <input id = 'review_text' name="review_text" type="textarea">
-        <input type="hidden" name="id" value={{id}}>
-        <input type="hidden" name="mov_title" value={{mov_title}}>
-        <input type="submit" name="rev_submit"> 
+        <textarea id = 'review_text' name="review_text"></textarea>
+        <input type="hidden" name="id" value="{{id | safe}}">
+        <input type="hidden" name="mov_title" value="{{mov_title | safe}}">
+        <input type="submit" id = 'rev_submit' name="rev_submit" disabled> 
+    </form>
+    <script>
+        document.getElementById('review_text').addEventListener('input', function() {
+          var textarea = document.getElementById('review_text');
+          var button = document.getElementById('rev_submit');
+          button.disabled = textarea.value.trim() === '';
+        });
+    </script>
+</div>
+<div style="color: red;">{{error_message}}</div>
+<!-- Back to main page -->
+<div>
+    <form action="/main_page", method="post">
+        <input type="submit", value="Return to Main page">
+        <input type="hidden", name="id" value="{{id | safe}}">
     </form>
 </div>
 </body>
